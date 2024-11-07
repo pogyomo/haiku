@@ -17,14 +17,22 @@ public:
     void TrackInput(std::unique_ptr<Input> &&input);
 
 private:
+    /// A queue for Input which can be used more than one threads.
+    class InputQueue {
+    public:
+        InputQueue() {}
+        void Push(std::unique_ptr<Input> &&input);
+        std::unique_ptr<Input> BlockedPop();
+
+    private:
+        std::mutex mutex_;
+        std::list<std::unique_ptr<Input>> queue_;
+    };
+
     void RunOnce();
-    std::unique_ptr<Input> AcceptInputFromQueue();
 
     Runtime &runtime_;
-
-    std::mutex queue_mutex_;
-    std::list<std::unique_ptr<Input>> queue_;
-
+    InputQueue input_queue_;
     std::vector<std::unique_ptr<Input>> inputs_;
 };
 
