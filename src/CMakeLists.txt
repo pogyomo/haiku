@@ -2,6 +2,7 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(OpenCV 4.4 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
+    integrate.cc
     tracking.cc
     runtime.cc
 )

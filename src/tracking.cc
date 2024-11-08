@@ -1,6 +1,5 @@
 #include "tracking.h"
 
-#include <memory>
 #include <thread>
 
 namespace haiku {
