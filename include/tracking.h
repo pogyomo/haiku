@@ -15,9 +15,11 @@ public:
     Tracking(Runtime &runtime);
     void Run();
     void TrackInput(std::unique_ptr<Input> &&input);
+    void Terminate();
+    bool IsRunning();
 
 private:
-    /// A queue for Input which can be used more than one threads.
+    /// Multi-threaded input queue with blocking.
     class InputQueue {
     public:
         InputQueue() {}
@@ -29,10 +31,27 @@ private:
         std::list<std::unique_ptr<Input>> queue_;
     };
 
+    /// Multi-threaded flag manager
+    class Flags {
+    public:
+        Flags();
+        bool IsRunnable();
+        bool IsRunning();
+        void SetRunnable();
+        void SetRunning();
+        void UnsetRunnable();
+        void UnsetRunning();
+
+    private:
+        std::mutex mutex_;
+        bool runnable_, running_;
+    };
+
     void RunOnce();
 
     Runtime &runtime_;
     InputQueue input_queue_;
+    Flags flags_;
     std::vector<std::unique_ptr<Input>> inputs_;
 };
 
